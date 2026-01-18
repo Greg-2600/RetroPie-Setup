@@ -1,19 +1,49 @@
 --- a/mupen64plus-core/src/r4300/hacktarux_dynarec/assemble.h
 +++ b/mupen64plus-core/src/r4300/hacktarux_dynarec/assemble.h
-@@
+@@ -1657,7 +1657,7 @@ jump_to_func:
+     put8(0xC7);
+ }
+ 
 -static INLINE void fsqrt(void)
--{
--   put8(0xD9);
--   put8(0xFA);
--}
 +static INLINE void fsqrt_emu(void)
-+{
-+   put8(0xD9);
-+   put8(0xFA);
-+}
+ {
+    put8(0xD9);
+    put8(0xFA);
 --- a/mupen64plus-core/src/r4300/hacktarux_dynarec/hacktarux_dynarec.c
 +++ b/mupen64plus-core/src/r4300/hacktarux_dynarec/hacktarux_dynarec.c
-@@
--   fsqrt();
-+   fsqrt_emu();
-*** End Patch
+@@ -6318,7 +6318,7 @@ gen_cop1s(usf_state *state, void *block)
+         case 4:
+             if (precomp_instr->local_addr == precomp_instr->local_arg) {
+                 unsigned int addr = (unsigned int)precomp_instr->local_addr;
+-                fsqrt();
++                fsqrt_emu();
+                 if ((!li_32bit(addr)) || (li_32bit(addr) && addr % 8))
+                     genilctx();
+                 li_32bit_long(addr + 8);
+@@ -6326,7 +6326,7 @@ gen_cop1s(usf_state *state, void *block)
+         case 5:
+             if (precomp_instr->local_addr == precomp_instr->local_arg) {
+                 unsigned int addr = (unsigned int)precomp_instr->local_addr;
+-                fsqrt();
++                fsqrt_emu();
+                 if ((!li_32bit(addr)) || (li_32bit(addr) && addr % 8))
+                     genilctx();
+                 li_32bit_long(addr + 8);
+@@ -7304,7 +7304,7 @@ gen_cop1d(usf_state *state, void *block)
+         case 4:
+             if (precomp_instr->local_addr == precomp_instr->local_arg) {
+                 unsigned int addr = (unsigned int)precomp_instr->local_addr;
+-                fsqrt();
++                fsqrt_emu();
+                 if ((!li_32bit(addr)) || (li_32bit(addr) && addr % 8))
+                     genilctx();
+                 li_32bit_long(addr + 8);
+@@ -7312,7 +7312,7 @@ gen_cop1d(usf_state *state, void *block)
+         case 5:
+             if (precomp_instr->local_addr == precomp_instr->local_arg) {
+                 unsigned int addr = (unsigned int)precomp_instr->local_addr;
+-                fsqrt();
++                fsqrt_emu();
+                 if ((!li_32bit(addr)) || (li_32bit(addr) && addr % 8))
+                     genilctx();
+                 li_32bit_long(addr + 8);

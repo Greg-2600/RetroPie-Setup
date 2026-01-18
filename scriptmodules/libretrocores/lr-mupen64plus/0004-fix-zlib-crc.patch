@@ -1,18 +1,32 @@
 --- a/mupen64plus-core/src/main/zip/crypt.h
 +++ b/mupen64plus-core/src/main/zip/crypt.h
-@@
--extern void crypt_init(unsigned long *pcrc_32_tab);
-+extern void crypt_init(const z_crc_t *pcrc_32_tab);
-@@
+@@ -24,7 +24,7 @@
+ #define CRC32(c, b) ((crc_32_tab[((int)(crc_32_tab[(c)\&0xff]^(b)))\&0xff]^((c)>>8)))
+ 
+ extern void crypt_init(unsigned long *pcrc_32_tab);
 -extern void crypt_set_method(/* ... */, unsigned long *pcrc_32_tab);
 +extern void crypt_set_method(/* ... */, const z_crc_t *pcrc_32_tab);
+ 
+ #endif
+ 
 --- a/mupen64plus-core/src/main/zip/zip.c
 +++ b/mupen64plus-core/src/main/zip/zip.c
-@@
--    ci.pcrc_32_tab = (unsigned long*)get_crc_table();
-+    ci.pcrc_32_tab = (const z_crc_t*)get_crc_table();
+@@ -1249,7 +1249,7 @@ int zipOpenNewFileInZip4_64(zipFile file, const char* filename, const zip_filei
+         unsigned char bufHead[RAND_HEAD_LEN];
+         unsigned int sizeHead;
+         zi->ci.encrypt = 1;
+-        zi->ci.pcrc_32_tab = get_crc_table();
++        zi->ci.pcrc_32_tab = (const z_crc_t*)get_crc_table();
+         /*init_keys(password,zi->ci.keys,zi->ci.pcrc_32_tab);*/
+ 
+         sizeHead=crypthead(password,bufHead,RAND_HEAD_LEN,zi->ci.keys,zi->ci.pcrc_32_tab,crcForCrypting);
 --- a/mupen64plus-core/src/main/zip/unzip.c
 +++ b/mupen64plus-core/src/main/zip/unzip.c
-@@
--    const unsigned long *pcrc_32_tab = (const unsigned long *)get_crc_table();
-+    const z_crc_t *pcrc_32_tab = (const z_crc_t *)get_crc_table();
+@@ -1619,7 +1619,7 @@ int unzOpenCurrentFile3(unzFile file, int* method, int* level, int raw, const c
+     s->stream_initialised = 0;
+ 
+-    s->pcrc_32_tab = get_crc_table();
++    s->pcrc_32_tab = (const z_crc_t*)get_crc_table();
+ 
+     return UNZ_OK;
+ }
